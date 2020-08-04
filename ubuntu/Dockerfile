@@ -27,8 +27,9 @@ WORKDIR /home/app
 
 RUN mkdir -p .ssh \
     && sudo -S -k locale-gen en_US en_US.UTF-8 \
-    && echo 'export LC_ALL="en_US.UTF-8"' >> ~/.bashrc \
-    && echo 'ssh-rsa key' > ~/.ssh/authorized_keys
+    && echo 'export LC_ALL="en_US.UTF-8"' >> ~/.bashrc
+
+ADD authorized_keys /home/app/.ssh/
 
 RUN sudo apt install -y apt-transport-https ca-certificates curl software-properties-common \
     && curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - \
@@ -37,13 +38,13 @@ RUN sudo apt install -y apt-transport-https ca-certificates curl software-proper
     && sudo apt install -y docker-ce \
     && sudo usermod -aG docker app
 
-RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add \
-    && sudo apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main" \
-    && sudo apt-get install -y kubeadm kubelet kubectl \
-    && sudo sed -i '/swap/d' /etc/fstab \
-    && sudo mkdir .kube
+# RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add \
+#     && sudo apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main" \
+#     && sudo apt-get install -y kubeadm kubelet kubectl \
+#     && sudo sed -i '/swap/d' /etc/fstab \
+#     && sudo mkdir .kube
 
-COPY config /home/app/.kube/
+# COPY config /home/app/.kube/
 
 EXPOSE 22 80 443 8080 3000 50000
 
