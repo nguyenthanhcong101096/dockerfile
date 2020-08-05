@@ -3,6 +3,9 @@ FROM centos:8
 RUN yum install -y sudo shadow-utils procps wget
 RUN yum install -y openssh-server openssh-clients
 RUN yum install -y nano
+RUN yum install -y curl
+RUN yum -y install initscripts && yum clean all
+
 RUN systemctl enable sshd.service
 
 RUN mkdir -p .ssh
