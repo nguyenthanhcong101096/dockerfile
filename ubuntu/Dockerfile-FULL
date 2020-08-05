@@ -38,6 +38,14 @@ RUN sudo apt install -y apt-transport-https ca-certificates curl software-proper
     && sudo apt install -y docker-ce \
     && sudo usermod -aG docker app
 
+RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add \
+    && sudo apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main" \
+    && sudo apt-get install -y kubeadm kubelet kubectl \
+    && sudo sed -i '/swap/d' /etc/fstab \
+    && mkdir .kube
+ 
+ADD config /home/app/.kube/
+
 EXPOSE 22 80 443 8080 3000 50000
 
 USER root
