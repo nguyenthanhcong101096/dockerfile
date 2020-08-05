@@ -1,22 +1,27 @@
-FROM amazonlinux
+FROM centos:7
 
-RUN yum update -y
-RUN yum install -y sudo shadow-utils procps wget
-RUN yum install -y openssh-server openssh-clients
-RUN yum install -y passwd
-RUN yum install -y nano
-RUN yum install -y curl
+RUN yum install -y sudo shadow-utils procps wget \
+    && yum install -y openssh-server openssh-clients \
+    && yum install -y nano \
+    && yum install -y curl \
+    && yum -y install initscripts \
+    && yum clean all \
+    && systemctl enable sshd.service
 
-RUN systemctl enable sshd.service
+RUN mkdir -p .ssh
+ADD authorized_keys /root/.ssh/
 
-RUN echo "PasswordAuthentication no" >> /etc/ssh/sshd_config
-RUN echo "PermitRootLogin no" >> /etc/ssh/sshd_config
-RUN echo "root ALL=NOPASSWD: ALL" >> /etc/sudoers
-RUN echo "app ALL=(ALL:ALL) ALL" >> /etc/sudoers
+RUN echo "root:password" | chpasswd
 
-RUN ssh-keygen -A
-RUN adduser app
-RUN echo "app:password" | chpasswd
+RUN rm /run/nologin \
+    && echo "PasswordAuthentication no" >> /etc/ssh/sshd_config \
+    && echo "PermitRootLogin no" >> /etc/ssh/sshd_config \
+    && echo "app ALL=NOPASSWD: ALL" >> /etc/sudoers \
+    && echo "app ALL=(ALL:ALL) ALL" >> /etc/sudoers
+
+RUN ssh-keygen -A \
+    && adduser app \
+    && echo "app:password" | chpasswd
 
 USER app
 WORKDIR /home/app
