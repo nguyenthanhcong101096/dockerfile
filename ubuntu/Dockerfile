@@ -19,17 +19,26 @@ RUN ssh-keygen -A \
 
 RUN echo "PasswordAuthentication no" >> /etc/ssh/sshd_config \
     && echo "PermitRootLogin no" >> /etc/ssh/sshd_config \
-    && echo "app ALL=(ALL:ALL) ALL" >> /etc/sudoers
+    && echo "app ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 USER app
 
 WORKDIR /home/app
 
 RUN mkdir -p .ssh \
-    && echo password | sudo -S -k locale-gen en_US en_US.UTF-8 \
+    && sudo -S -k locale-gen en_US en_US.UTF-8 \
     && echo 'export LC_ALL="en_US.UTF-8"' >> ~/.bashrc
 
 ADD authorized_keys /home/app/.ssh/
+
+RUN sudo apt install -y apt-transport-https ca-certificates curl software-properties-common \
+    && curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - \
+    && sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable" \
+    && sudo apt -y update \
+    && sudo apt install -y docker-ce \
+    && sudo usermod -aG docker app
+
+ADD config /home/app/.kube/
 
 EXPOSE 22 80 443 8080 3000 50000
 
