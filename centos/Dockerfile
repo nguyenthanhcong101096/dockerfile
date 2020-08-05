@@ -1,4 +1,4 @@
-FROM centos:7
+FROM centos
 
 RUN yum install -y sudo shadow-utils procps wget \
     && yum install -y openssh-server openssh-clients \
@@ -13,8 +13,9 @@ ADD authorized_keys /root/.ssh/
 
 RUN echo "root:password" | chpasswd
 
-RUN rm /run/nologin \
-    && echo "PasswordAuthentication no" >> /etc/ssh/sshd_config \
+RUN rm /run/nologin
+
+RUN echo "PasswordAuthentication no" >> /etc/ssh/sshd_config \
     && echo "PermitRootLogin no" >> /etc/ssh/sshd_config \
     && echo "app ALL=NOPASSWD: ALL" >> /etc/sudoers \
     && echo "app ALL=(ALL:ALL) ALL" >> /etc/sudoers
