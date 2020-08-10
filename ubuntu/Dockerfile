@@ -31,15 +31,6 @@ RUN mkdir -p .ssh \
 
 ADD authorized_keys /home/app/.ssh/
 
-RUN sudo apt install -y apt-transport-https ca-certificates curl software-properties-common \
-    && curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - \
-    && sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable" \
-    && sudo apt -y update \
-    && sudo apt install -y docker-ce \
-    && sudo usermod -aG docker app
-
-ADD config /home/app/.kube/
-
 EXPOSE 22 80 443 8080 3000 50000
 
 USER root
