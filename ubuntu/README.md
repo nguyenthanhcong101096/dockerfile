@@ -1,5 +1,13 @@
-## Run container ubuntu
+# Dockerfile
 
+### 1. Ubuntu container
 ```
-docker run -ti --privileged=true --tmpfs /run -v /sys/fs/cgroup:/sys/fs/cgroup:ro -d -p 22:22 congttl/ubuntu
+# create volume on machine
+mkdir data_container
+
+# run container
+docker run -d --privileged=true -v data_container:/var/data_host -p 22:22 -p 80:80 congttl/ubuntu:latest
+
+# ssh to ubuntu
+ssh -i key.pem app@localhost
 ```
