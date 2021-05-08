@@ -26,6 +26,8 @@ sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors=Swa
 
 **run docker**
 ```
+sudo swapoff -a
+
 systemctl daemon-reload
 
 sudo systemctl start docker
