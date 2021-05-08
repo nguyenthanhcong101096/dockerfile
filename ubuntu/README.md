@@ -22,6 +22,8 @@ docker run -d --name k8s -p 80:80 -p 22:22 --privileged -v /sys/fs/cgroup:/sys/f
 **run k8s**
 ```
 sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors=Swap --ignore-preflight-errors=SystemVerification --ignore-preflight-errors=FileContent--proc-sys-net-bridge-bridge-nf-call-iptables
+
+kubectl taint node master.xtl node-role.kubernetes.io/master-
 ```
 
 **run docker**
