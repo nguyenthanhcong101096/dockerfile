@@ -31,4 +31,6 @@ EXPOSE 22 80 443 8080 3000 5000
 
 USER root
 
+ADD run_k8s.sh /
+
 CMD ["/lib/systemd/systemd"]
