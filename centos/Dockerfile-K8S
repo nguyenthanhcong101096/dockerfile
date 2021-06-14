@@ -22,32 +22,12 @@ RUN ssh-keygen -A \
 RUN curl -fsSL https://get.docker.com/ | sh \
    && systemctl enable docker
 
-# Install minikube
-RUN yum -y install epel-release \
-    && yum -y install libvirt qemu-kvm virt-install virt-top libguestfs-tools bridge-utils \
-    && systemctl enable libvirtd \
-    && sudo usermod -a -G libvirt $(whoami) \
-    && wget https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 \
-    && chmod +x minikube-linux-amd64 \
-    && sudo mv minikube-linux-amd64 /usr/local/bin/minikube
-
-# Installing kubectl
-RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl \
-    && chmod +x kubectl \
-    && sudo mv kubectl  /usr/local/bin/
-
 RUN mkdir -p .ssh
 
 ADD authorized_keys .ssh/
-
-RUN mkdir scripts
-
-COPY scripts /scripts
-
-RUN chmod u+x /scripts/*.sh
 
 USER ec2_user
 
 EXPOSE 22 80 443 8080 3000
 
-ENTRYPOINT [ "./scripts/entrypoint.sh" ]
+ENTRYPOINT [ "/usr/sbin/init" ]
