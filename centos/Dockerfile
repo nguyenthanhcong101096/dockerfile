@@ -2,6 +2,7 @@ FROM centos
 
 ENV container docker
 
+# install common packages
 RUN yum install -y openssh-server openssh-clients \
     && yum install -y sudo \
     && yum install -y nano \
@@ -11,25 +12,21 @@ RUN yum install -y openssh-server openssh-clients \
     && yum clean all \
     && systemctl enable sshd.service
 
+# create folder ssh and change password root
 RUN mkdir -p .ssh
 ADD authorized_keys /root/.ssh/
-
 RUN echo "root:password" | chpasswd
 
-RUN echo "PasswordAuthentication no" >> /etc/ssh/sshd_config \
-    && echo "PermitRootLogin no" >> /etc/ssh/sshd_config \
-    && echo "app ALL=NOPASSWD: ALL" >> /etc/sudoers
-    #&& echo "app ALL=(ALL:ALL) ALL" >> /etc/sudoers
-
-RUN ssh-keygen -A \
-    && adduser app \
-    && echo "app:password" | chpasswd
-
-USER app
-WORKDIR /home/app
-
+# create user app and change password
+RUN ssh-keygen -A && adduser app && echo "app:password" | chpasswd
 RUN mkdir -p .ssh
 ADD authorized_keys /home/app/.ssh/
+RUN rm -rf /run/nologin
+
+RUN echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config \
+    && echo "PermitRootLogin yes" >> /etc/ssh/sshd_config \
+    && echo "app ALL=NOPASSWD: ALL" >> /etc/sudoers \
+    && echo "app ALL=(ALL:ALL) ALL" >> /etc/sudoers
 
 EXPOSE 22 80 443 8080 3000
 
