@@ -26,6 +26,11 @@ RUN echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config \
     && echo "app ALL=NOPASSWD: ALL" >> /etc/sudoers \
     && echo "app ALL=(ALL:ALL) ALL" >> /etc/sudoers
 
+# install docker
+RUN sudo amazon-linux-extras install docker \
+    && sudo usermod -a -G docker root \
+    && sudo usermod -a -G docker app
+
 EXPOSE 22 80 443 8080 3000
 
 USER root
