@@ -28,7 +28,7 @@ RUN echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config \
     && echo "app ALL=NOPASSWD: ALL" >> /etc/sudoers \
     && echo "app ALL=(ALL:ALL) ALL" >> /etc/sudoers
 
-EXPOSE 22 80 443 8080 3000
+EXPOSE 22 80 443
 
 USER root
 
