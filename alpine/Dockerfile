@@ -1,7 +1,10 @@
-FROM alpine:3.8
+FROM alpine
 
-RUN apk update && \
-    apk add --no-cache openssh openrc tzdata sudo bash git
+RUN apk update \
+    && apk add --no-cache openssh-server openrc nano git nginx rsync \
+    && mkdir -p /run/openrc \
+    && touch /run/openrc/softlevel \
+    && mkdir /repos /repos-backup
 
 # create folder ssh and change password root
 RUN mkdir -p /root/.ssh && chmod 700 /root/.ssh/ \
@@ -22,4 +25,4 @@ RUN echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config \
 
 EXPOSE 22
 
-CMD ["/usr/sbin/sshd", "-D"]
+ENTRYPOINT ["sh","-c", "rc-status; rc-service sshd start; crond -f"]
