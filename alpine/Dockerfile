@@ -1,10 +1,14 @@
 FROM alpine
 
 RUN apk update \
-    && apk add --no-cache openssh-server openrc nano git nginx rsync \
+    && apk add --no-cache openssh-server openrc curl sudo nano git nginx rsync \
     && mkdir -p /run/openrc \
     && touch /run/openrc/softlevel \
     && mkdir /repos /repos-backup
+
+# install docker
+RUN echo "@community http://dl-cdn.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repositories \
+    && apk add docker@community
 
 # create folder ssh and change password root
 RUN mkdir -p /root/.ssh && chmod 700 /root/.ssh/ \
@@ -22,6 +26,10 @@ RUN echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config \
     && echo "PermitRootLogin yes" >> /etc/ssh/sshd_config \
     && echo "app ALL=NOPASSWD: ALL" >> /etc/sudoers \
     && echo "app ALL=(ALL:ALL) ALL" >> /etc/sudoers
+
+RUN mkdir scripts
+COPY scripts /scripts
+RUN chmod u+x scripts/*
 
 EXPOSE 22
 
