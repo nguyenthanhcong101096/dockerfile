@@ -2,6 +2,7 @@ FROM alpine
 
 RUN apk update \
     && apk add --no-cache openssh-server openrc curl sudo nano git nginx rsync \
+    && apk add --no-cache openssh-client \
     && mkdir -p /run/openrc \
     && touch /run/openrc/softlevel \
     && mkdir /repos /repos-backup
@@ -31,6 +32,6 @@ RUN mkdir scripts
 COPY scripts /scripts
 RUN chmod u+x scripts/*
 
-EXPOSE 22
+EXPOSE 22 80 443
 
 ENTRYPOINT ["sh","-c", "rc-status; rc-service sshd start; crond -f"]
