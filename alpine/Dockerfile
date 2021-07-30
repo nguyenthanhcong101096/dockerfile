@@ -28,11 +28,9 @@ RUN echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config \
     && echo "app ALL=NOPASSWD: ALL" >> /etc/sudoers \
     && echo "app ALL=(ALL:ALL) ALL" >> /etc/sudoers
 
-WORKDIR /root
-
 RUN mkdir scripts
-COPY scripts root/scripts
-RUN chmod u+x root/scripts/*
+COPY scripts /scripts
+RUN chmod u+x scripts/*
 
 EXPOSE 22 80 443
 
